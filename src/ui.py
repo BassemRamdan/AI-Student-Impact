@@ -1,13 +1,18 @@
 import streamlit as st
 import os
 
-@st.cache_data
+_CSS_CACHE = None
+
 def get_css():
-    css_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "style.css")
-    if os.path.exists(css_path):
-        with open(css_path, "r") as f:
-            return f.read()
-    return ""
+    global _CSS_CACHE
+    if _CSS_CACHE is None:
+        css_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "style.css")
+        if os.path.exists(css_path):
+            with open(css_path, "r") as f:
+                _CSS_CACHE = f.read()
+        else:
+            _CSS_CACHE = ""
+    return _CSS_CACHE
 
 def load_css():
     """Injects custom CSS and external libraries (FontAwesome, Animate.css) into the Streamlit app."""
