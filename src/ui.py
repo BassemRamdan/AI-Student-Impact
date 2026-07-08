@@ -28,7 +28,7 @@ def load_css():
         st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
 def top_navbar(active_name):
-    """Renders an instant SPA navigation bar using Streamlit's native page_link."""
+    """Renders a custom fixed top navigation bar replacing the sidebar."""
     pages = [
         {"name": "Home", "icon": "🏠", "url": "app.py"},
         {"name": "EDA", "icon": "📊", "url": "pages/1_EDA.py"},
@@ -43,35 +43,69 @@ def top_navbar(active_name):
             /* Hide the default Streamlit sidebar */
             [data-testid="collapsedControl"] { display: none !important; }
             section[data-testid="stSidebar"] { display: none !important; }
+            header[data-testid="stHeader"] { background: rgba(0,0,0,0) !important; display: none !important; }
             
-            /* Style all st.page_link elements globally (acts as our navbar links) */
+            /* Target the FIRST st.columns on the page (which is our navbar) and make it the fixed header */
+            [data-testid="stHorizontalBlock"]:first-of-type {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                background: rgba(15, 32, 39, 0.6) !important;
+                backdrop-filter: blur(15px) !important;
+                -webkit-backdrop-filter: blur(15px) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                z-index: 999999 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                padding: 15px 0 !important;
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+                gap: 0 !important;
+            }
+            
+            /* Prevent columns from stretching, make them fit content tightly */
+            [data-testid="stHorizontalBlock"]:first-of-type > div[data-testid="column"] {
+                flex: 0 1 auto !important;
+                width: auto !important;
+                min-width: auto !important;
+            }
+            
+            /* Style the page_link to look EXACTLY like the old <a> tags */
             [data-testid="stPageLink-NavLink"] {
-                background: rgba(15, 32, 39, 0.4);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 8px;
-                padding: 10px !important;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                color: #ffffff;
-                font-family: 'Outfit', sans-serif;
-                font-weight: 500;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                background: transparent !important;
+                border: none !important;
+                color: #ffffff !important;
+                font-family: 'Outfit', sans-serif !important;
+                font-size: 1.1rem !important;
+                font-weight: 500 !important;
+                margin: 0 20px !important;
+                padding: 8px 15px !important;
+                border-radius: 8px !important;
+                transition: all 0.3s ease !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
             }
+            
             [data-testid="stPageLink-NavLink"]:hover {
-                background: rgba(0, 210, 255, 0.1);
-                color: #00d2ff;
-                border-color: #00d2ff;
-                transform: translateY(-2px);
+                background: rgba(255, 255, 255, 0.1) !important;
+                color: #00d2ff !important;
+                transform: translateY(-2px) !important;
             }
-            /* Highlight active link if needed */
+            
+            /* Highlight active link */
             [data-testid="stPageLink-NavLink"][data-active="true"] {
-                background: rgba(0, 210, 255, 0.2);
-                color: #00d2ff;
-                border-color: #00d2ff;
-                box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+                background: rgba(255, 255, 255, 0.15) !important;
+                color: #00d2ff !important;
+                border-bottom: 2px solid #00d2ff !important;
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+            
+            /* Push main content down to clear fixed navbar */
+            .block-container {
+                padding-top: 100px !important;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -80,9 +114,6 @@ def top_navbar(active_name):
     for i, item in enumerate(pages):
         with cols[i]:
             st.page_link(item["url"], label=item["name"], icon=item["icon"])
-    
-    # Add a visual separator
-    st.markdown("<hr style='border-color: rgba(0, 210, 255, 0.3); margin-top: 5px; margin-bottom: 25px;'>", unsafe_allow_html=True)
 
 def page_header(title, icon_class, subtitle=None):
     """Renders a styled page header with a FontAwesome icon and a gradient title."""
