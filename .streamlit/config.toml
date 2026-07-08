@@ -1,0 +1,8 @@
+[theme]
+base="dark"
+primaryColor="#00d2ff"
+secondaryBackgroundColor="#112233"
+font="sans serif"
+
+[server]
+enableCORS = false
