@@ -28,23 +28,61 @@ def load_css():
         st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
 def top_navbar(active_name):
-    """Renders a custom fixed top navigation bar replacing the sidebar."""
-    nav_items = [
-        {"name": "Home", "icon": "fa-solid fa-home", "url": "."},
-        {"name": "EDA", "icon": "fa-solid fa-chart-pie", "url": "EDA"},
-        {"name": "Predict GPA", "icon": "fa-solid fa-arrow-trend-up", "url": "Predict_GPA"},
-        {"name": "Burnout Risk", "icon": "fa-solid fa-fire-flame-curved", "url": "Burnout_Risk"},
-        {"name": "Clustering", "icon": "fa-solid fa-users-viewfinder", "url": "Clustering"},
-        {"name": "Model Insights", "icon": "fa-solid fa-brain", "url": "Model_Insights"}
+    """Renders an instant SPA navigation bar using Streamlit's native page_link."""
+    pages = [
+        {"name": "Home", "icon": "🏠", "url": "app.py"},
+        {"name": "EDA", "icon": "📊", "url": "pages/1_EDA.py"},
+        {"name": "Predict GPA", "icon": "📈", "url": "pages/2_Predict_GPA.py"},
+        {"name": "Burnout Risk", "icon": "🔥", "url": "pages/3_Burnout_Risk.py"},
+        {"name": "Clustering", "icon": "👥", "url": "pages/4_Clustering.py"},
+        {"name": "Model Insights", "icon": "🧠", "url": "pages/5_Model_Insights.py"}
     ]
     
-    nav_html = '<div class="custom-navbar">'
-    for item in nav_items:
-        active_class = 'class="active"' if item['name'] == active_name else ''
-        nav_html += f'<a href="{item["url"]}" target="_self" {active_class}><i class="{item["icon"]}"></i> {item["name"]}</a>'
-    nav_html += '</div>'
+    st.markdown("""
+        <style>
+            /* Hide the default Streamlit sidebar */
+            [data-testid="collapsedControl"] { display: none !important; }
+            section[data-testid="stSidebar"] { display: none !important; }
+            
+            /* Style all st.page_link elements globally (acts as our navbar links) */
+            [data-testid="stPageLink-NavLink"] {
+                background: rgba(15, 32, 39, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 8px;
+                padding: 10px !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #ffffff;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+            [data-testid="stPageLink-NavLink"]:hover {
+                background: rgba(0, 210, 255, 0.1);
+                color: #00d2ff;
+                border-color: #00d2ff;
+                transform: translateY(-2px);
+            }
+            /* Highlight active link if needed */
+            [data-testid="stPageLink-NavLink"][data-active="true"] {
+                background: rgba(0, 210, 255, 0.2);
+                color: #00d2ff;
+                border-color: #00d2ff;
+                box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            }
+        </style>
+    """, unsafe_allow_html=True)
     
-    st.markdown(nav_html, unsafe_allow_html=True)
+    cols = st.columns(len(pages))
+    for i, item in enumerate(pages):
+        with cols[i]:
+            st.page_link(item["url"], label=item["name"], icon=item["icon"])
+    
+    # Add a visual separator
+    st.markdown("<hr style='border-color: rgba(0, 210, 255, 0.3); margin-top: 5px; margin-bottom: 25px;'>", unsafe_allow_html=True)
 
 def page_header(title, icon_class, subtitle=None):
     """Renders a styled page header with a FontAwesome icon and a gradient title."""
