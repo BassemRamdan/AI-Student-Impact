@@ -280,3 +280,10 @@ i.fa, i.fas, i.far, i.fal, i.fab {
         padding: 15px !important;
     }
 }
+
+/* --- HIDE STREAMLIT SKELETON LOADER --- */
+[data-testid="stSkeleton"] {
+    display: none !important;
+    opacity: 0 !important;
+    height: 0 !important;
+}
