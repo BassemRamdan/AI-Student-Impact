@@ -1,6 +1,14 @@
 import streamlit as st
 import os
 
+@st.cache_data
+def get_css():
+    css_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "style.css")
+    if os.path.exists(css_path):
+        with open(css_path, "r") as f:
+            return f.read()
+    return ""
+
 def load_css():
     """Injects custom CSS and external libraries (FontAwesome, Animate.css) into the Streamlit app."""
     # Load external libraries
@@ -10,10 +18,9 @@ def load_css():
     """, unsafe_allow_html=True)
     
     # Load custom style.css
-    css_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "style.css")
-    if os.path.exists(css_path):
-        with open(css_path, "r") as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    css_content = get_css()
+    if css_content:
+        st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
 def top_navbar(active_name):
     """Renders a custom fixed top navigation bar replacing the sidebar."""
