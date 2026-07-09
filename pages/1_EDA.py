@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.data_loader import load_data
 from src.viz import (
     plot_feature_dist, plot_scatter_bubble, plot_violin, 
-    plot_kde_overlay, plot_density_heatmap, plot_policy_summary, plot_correlation
+    plot_kde_overlay, plot_density_heatmap, plot_policy_summary, plot_correlation, plot_3d_scatter
 )
 from src.ui import load_css, page_header, top_navbar
 
@@ -89,3 +89,9 @@ with c6:
     corr_cols = ["Pre_Semester_GPA", "Post_Semester_GPA", "Weekly_GenAI_Hours", "Traditional_Study_Hours", "Skill_Retention_Score", "Perceived_AI_Dependency"]
     fig_corr = plot_correlation(df, corr_cols)
     st.plotly_chart(fig_corr, use_container_width=True)
+
+st.markdown("<hr style='opacity: 0.2;'>", unsafe_allow_html=True)
+st.markdown("### <i class='fa-solid fa-cube' style='color:#00d2ff;'></i> Multidimensional Burnout Analysis (3D)", unsafe_allow_html=True)
+st.markdown("<p style='color: rgba(255,255,255,0.7);'>This interactive 3D chart illustrates how AI Dependency, Anxiety Level, and GenAI Hours jointly impact Burnout Risk. (Sampled to 1,500 points for smooth performance)</p>", unsafe_allow_html=True)
+fig_3d = plot_3d_scatter(df, "Perceived_AI_Dependency", "Anxiety_Level_During_Exams", "Weekly_GenAI_Hours", "Burnout_Risk_Level")
+st.plotly_chart(fig_3d, use_container_width=True)

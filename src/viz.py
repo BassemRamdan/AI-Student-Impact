@@ -47,6 +47,27 @@ def plot_scatter_bubble(df, x_col, y_col, color_col, size_col):
     fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
     return fig
 
+def plot_3d_scatter(df, x_col, y_col, z_col, color_col):
+    df_sample = df.sample(n=min(1500, len(df)), random_state=42)
+    fig = px.scatter_3d(
+        df_sample, x=x_col, y=y_col, z=z_col, color=color_col,
+        opacity=0.7, size_max=10,
+        color_discrete_sequence=[PALETTE[2], PALETTE[3], PALETTE[1]],
+        category_orders={color_col: ["Low", "Medium", "High"]}
+    )
+    fig.update_layout(
+        height=600,
+        scene=dict(
+            xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', backgroundcolor="rgba(0,0,0,0)"),
+            yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', backgroundcolor="rgba(0,0,0,0)"),
+            zaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', backgroundcolor="rgba(0,0,0,0)"),
+            bgcolor="rgba(0,0,0,0)"
+        ),
+        **get_layout_kwargs()
+    )
+    return fig
+
+
 def plot_pca_clusters(df):
     fig = px.scatter(
         df, x="PCA1", y="PCA2", color=df["Cluster"].astype(str),
