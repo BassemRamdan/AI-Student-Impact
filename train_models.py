@@ -57,7 +57,7 @@ print("Training Burnout Risk Model...")
 label_encoder = LabelEncoder()
 y_burnout_enc = label_encoder.fit_transform(y_burnout)
 
-burnout_model = xgb.XGBClassifier(n_estimators=250, max_depth=5, learning_rate=0.05, random_state=42, n_jobs=-1, verbosity=0, eval_metric="mlogloss")
+burnout_model = xgb.XGBClassifier(n_estimators=600, max_depth=12, learning_rate=0.1, random_state=42, n_jobs=-1, verbosity=0, eval_metric="mlogloss")
 sample_weights = compute_sample_weight(class_weight='balanced', y=y_burnout_enc)
 burnout_model.fit(X_proc, y_burnout_enc, sample_weight=sample_weights)
 
