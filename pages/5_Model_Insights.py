@@ -20,11 +20,11 @@ top_navbar("Model Insights")
 page_header("Machine Learning Insights", "fa-solid fa-brain", "Deep dive into model performance and feature importances for GPA Prediction.")
 
 @st.cache_data
-def get_evaluation_data():
+def get_evaluation_data(cache_version=2):
     df = load_data()
     df_eng = engineer_features(df)
     
-    preprocessor, gpa_model, skill_model, burnout_model, le = load_models()
+    preprocessor, gpa_model, skill_model, burnout_model, le = load_models(cache_version=2)
     
     num_cols = ["Pre_Semester_GPA", "Weekly_GenAI_Hours", "Tool_Diversity", "Traditional_Study_Hours", "Perceived_AI_Dependency", "Anxiety_Level_During_Exams"]
     ord_cols = ["Year_of_Study", "Prompt_Engineering_Skill"]
@@ -59,7 +59,7 @@ def get_evaluation_data():
 
 with st.spinner("Analyzing XGBoost Model..."):
     try:
-        y_true, y_pred, top_features, y_true_burnout_enc, y_pred_burnout_enc, labels = get_evaluation_data()
+        y_true, y_pred, top_features, y_true_burnout_enc, y_pred_burnout_enc, labels = get_evaluation_data(cache_version=2)
         
         st.markdown('<div class="animate__animated animate__fadeInUp">', unsafe_allow_html=True)
         col1, col2 = st.columns([1, 1])
