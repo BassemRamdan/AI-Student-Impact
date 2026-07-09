@@ -10,7 +10,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.ui import load_css, page_header, top_navbar
 from src.data_loader import load_data, engineer_features
 from src.models import load_models
-from src.viz import plot_feature_importance, plot_actual_vs_predicted
+from src.viz import plot_feature_importance, plot_actual_vs_predicted, plot_confusion_matrix
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, confusion_matrix
 
 st.set_page_config(page_title="Model Insights", layout="wide")
 load_css()
@@ -49,11 +50,16 @@ def get_evaluation_data():
     # Filter top 15 features
     top_features = dict(sorted(feat_imp_dict.items(), key=lambda item: item[1], reverse=True)[:15])
     
-    return y_true_gpa, y_pred_gpa, top_features
+    # Evaluate Burnout Model
+    y_true_burnout = df_eng["Burnout_Risk_Level"]
+    y_true_burnout_enc = le.transform(y_true_burnout)
+    y_pred_burnout_enc = burnout_model.predict(X_processed)
+    
+    return y_true_gpa, y_pred_gpa, top_features, y_true_burnout_enc, y_pred_burnout_enc, le.classes_
 
 with st.spinner("Analyzing XGBoost Model..."):
     try:
-        y_true, y_pred, top_features = get_evaluation_data()
+        y_true, y_pred, top_features, y_true_burnout_enc, y_pred_burnout_enc, labels = get_evaluation_data()
         
         st.markdown('<div class="animate__animated animate__fadeInUp">', unsafe_allow_html=True)
         col1, col2 = st.columns([1, 1])
@@ -79,6 +85,46 @@ with st.spinner("Analyzing XGBoost Model..."):
             st.markdown('</div>', unsafe_allow_html=True)
             
         st.markdown('</div><br>', unsafe_allow_html=True)
+        
+        # --- NEW SECTION: CLASSIFIER EVALUATION ---
+        st.markdown('<div class="animate__animated animate__fadeInUp animate__delay-1s">', unsafe_allow_html=True)
+        st.markdown('<h2><i class="fa-solid fa-fire-flame-curved" style="color:#ff6600;"></i> Burnout Risk Classifier Performance</h2>', unsafe_allow_html=True)
+        
+        # Calculate Metrics
+        acc = accuracy_score(y_true_burnout_enc, y_pred_burnout_enc)
+        precision, recall, f1, _ = precision_recall_fscore_support(y_true_burnout_enc, y_pred_burnout_enc, average='weighted')
+        cm = confusion_matrix(y_true_burnout_enc, y_pred_burnout_enc)
+        
+        # Metric Cards Row
+        m1, m2, m3, m4 = st.columns(4)
+        def metric_card(title, val, icon, color):
+            return f'''
+            <div style="background: rgba(15, 32, 39, 0.4); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(0, 210, 255, 0.2); backdrop-filter: blur(10px);">
+                <i class="{icon}" style="font-size: 2rem; color: {color}; margin-bottom: 10px;"></i>
+                <h4 style="margin: 0; color: rgba(255,255,255,0.7);">{title}</h4>
+                <h2 style="margin: 5px 0 0 0; color: {color};">{val:.2%}</h2>
+            </div>
+            '''
+        
+        with m1:
+            st.markdown(metric_card("Accuracy", acc, "fa-solid fa-check-double", "#39ff14"), unsafe_allow_html=True)
+        with m2:
+            st.markdown(metric_card("Precision", precision, "fa-solid fa-crosshairs", "#00d2ff"), unsafe_allow_html=True)
+        with m3:
+            st.markdown(metric_card("Recall", recall, "fa-solid fa-reply-all", "#ffea00"), unsafe_allow_html=True)
+        with m4:
+            st.markdown(metric_card("F1-Score", f1, "fa-solid fa-balance-scale", "#ff007f"), unsafe_allow_html=True)
+            
+        st.markdown('<br>', unsafe_allow_html=True)
+        
+        # Confusion Matrix Chart
+        st.markdown('<div style="background: rgba(15, 32, 39, 0.4); padding: 20px; border-radius: 12px; backdrop-filter: blur(15px); border: 1px solid rgba(0, 210, 255, 0.2);">', unsafe_allow_html=True)
+        st.markdown('<h3 style="margin-top:0; color:#00d2ff;"><i class="fa-solid fa-border-all"></i> Confusion Matrix</h3>', unsafe_allow_html=True)
+        fig_cm = plot_confusion_matrix(cm, labels)
+        st.plotly_chart(fig_cm, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div><br>', unsafe_allow_html=True)
+        # ------------------------------------------
         
         st.markdown('<div class="animate__animated animate__fadeInUp animate__delay-1s">', unsafe_allow_html=True)
         st.markdown("""

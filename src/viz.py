@@ -208,3 +208,14 @@ def plot_actual_vs_predicted(y_true, y_pred, title):
     fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
     fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.05)')
     return fig
+
+def plot_confusion_matrix(cm, labels):
+    fig = px.imshow(
+        cm, text_auto=True, aspect="auto",
+        x=labels, y=labels,
+        color_continuous_scale="electric",
+        labels=dict(x="Predicted Class", y="Actual Class", color="Count")
+    )
+    fig.update_layout(title="", **get_layout_kwargs())
+    return fig
+
