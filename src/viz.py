@@ -158,6 +158,7 @@ def plot_radar_chart(df):
         
     fig.update_layout(
         polar=dict(
+            bgcolor="rgba(0,0,0,0)",
             radialaxis=dict(visible=True, range=[0, 1], gridcolor="rgba(255,255,255,0.1)"),
             angularaxis=dict(gridcolor="rgba(255,255,255,0.1)")
         ),
