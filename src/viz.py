@@ -32,7 +32,7 @@ def plot_feature_dist(df, feature, color_by=None):
 
 def plot_correlation(df, features):
     corr = df[features].corr()
-    fig = px.imshow(corr, text_auto=".2f", aspect="auto", color_continuous_scale="Viridis", zmin=-1, zmax=1)
+    fig = px.imshow(corr, text_auto=".2f", aspect="auto", color_continuous_scale=["#ff007f", "#1a1a2e", "#00d2ff"], zmin=-1, zmax=1)
     fig.update_layout(**get_layout_kwargs())
     return fig
 
