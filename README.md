@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://img.icons8.com/?size=120&id=sM5wYQz8i2m5&format=png&color=00D2FF" alt="Brain AI Icon"/>
+  <img src="https://cdn-icons-png.flaticon.com/512/2103/2103134.png" alt="Brain AI Icon" width="120" style="filter: drop-shadow(0px 0px 10px #00D2FF);"/>
   <h1 align="center" style="color: #00d2ff;">AI Student Impact Analysis 🚀</h1>
   <p align="center">
     <strong>An End-to-End Machine Learning & Analytics Dashboard exploring the impact of Generative AI on Student Performance.</strong>
@@ -67,8 +67,3 @@ To run this project on your local machine, follow these steps:
   - `skill_model`: XGBoost Regressor
   - `burnout_model`: XGBoost Classifier
 - **Evaluation:** Real-time feature importance charts and "Actual vs Predicted" scatter plots directly accessible within the dashboard's "Model Insights" page.
-
-<hr>
-<div align="center">
-  <p>Built with ❤️ by Bassem Ramdan.</p>
-</div>
