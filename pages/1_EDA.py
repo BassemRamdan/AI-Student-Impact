@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.data_loader import load_data
 from src.viz import (
-    plot_feature_dist, plot_scatter_bubble, plot_violin, 
+    plot_feature_dist, plot_scatter_bubble, plot_violin, plot_box,
     plot_kde_overlay, plot_density_heatmap, plot_policy_summary, plot_correlation, plot_3d_scatter
 )
 from src.ui import load_css, page_header, top_navbar
@@ -47,6 +47,15 @@ with col2:
                                ["Major_Category", "Year_of_Study", "Primary_Use_Case", "Burnout_Risk_Level"])
     fig2 = plot_feature_dist(df, cat_feature)
     st.plotly_chart(fig2, use_container_width=True)
+
+st.markdown("<hr style='opacity: 0.2;'>", unsafe_allow_html=True)
+st.markdown("### <i class='fa-solid fa-box-open' style='color:#ff007f;'></i> Outlier Detection (Box Plots)", unsafe_allow_html=True)
+
+st.markdown("<p style='color: rgba(255,255,255,0.7);'>Box plots are excellent for spotting statistical outliers (the dots outside the whiskers). Notice that while there are outliers in hours studied, we deliberately <b>kept them</b> because they represent genuine student behavior, not errors!</p>", unsafe_allow_html=True)
+outlier_col = st.selectbox("Select feature to check for outliers:", 
+                            ["Weekly_GenAI_Hours", "Traditional_Study_Hours", "Pre_Semester_GPA", "Anxiety_Level_During_Exams"], index=0)
+fig_box = plot_box(df, "Burnout_Risk_Level", outlier_col)
+st.plotly_chart(fig_box, use_container_width=True)
 
 st.markdown("<hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 st.markdown("### <i class='fa-solid fa-layer-group' style='color:#E8743B;'></i> Advanced Distributions", unsafe_allow_html=True)
