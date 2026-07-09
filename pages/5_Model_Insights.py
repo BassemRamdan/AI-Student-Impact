@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.ui import load_css, page_header, top_navbar
 from src.data_loader import load_data, engineer_features
-from src.models import load_models
+from src.models import load_all_models
 from src.viz import plot_feature_importance, plot_actual_vs_predicted, plot_confusion_matrix
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, confusion_matrix
 
@@ -20,11 +20,11 @@ top_navbar("Model Insights")
 page_header("Machine Learning Insights", "fa-solid fa-brain", "Deep dive into model performance and feature importances for GPA Prediction.")
 
 @st.cache_data
-def get_evaluation_data(cache_version=2):
+def get_model_evaluation_data():
     df = load_data()
     df_eng = engineer_features(df)
     
-    preprocessor, gpa_model, skill_model, burnout_model, le = load_models(cache_version=2)
+    preprocessor, gpa_model, skill_model, burnout_model, le = load_all_models()
     
     num_cols = ["Pre_Semester_GPA", "Weekly_GenAI_Hours", "Tool_Diversity", "Traditional_Study_Hours", "Perceived_AI_Dependency", "Anxiety_Level_During_Exams"]
     ord_cols = ["Year_of_Study", "Prompt_Engineering_Skill"]
@@ -59,7 +59,7 @@ def get_evaluation_data(cache_version=2):
 
 with st.spinner("Analyzing XGBoost Model..."):
     try:
-        y_true, y_pred, top_features, y_true_burnout_enc, y_pred_burnout_enc, labels = get_evaluation_data(cache_version=2)
+        y_true, y_pred, top_features, y_true_burnout_enc, y_pred_burnout_enc, labels = get_model_evaluation_data()
         
         st.markdown('<div class="animate__animated animate__fadeInUp">', unsafe_allow_html=True)
         col1, col2 = st.columns([1, 1])

@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 @st.cache_resource
-def load_models(cache_version=2):
+def load_all_models():
     """Load and cache the preprocessor and trained models."""
     with open("models/preprocessor.pkl", "rb") as f:
         preprocessor = pickle.load(f)
@@ -19,7 +19,7 @@ def load_models(cache_version=2):
 
 def predict_gpa_and_skill(input_data):
     """Predicts Post_Semester_GPA and Skill_Retention_Score based on input data (dict)."""
-    preprocessor, gpa_model, skill_model, _, _ = load_models(cache_version=2)
+    preprocessor, gpa_model, skill_model, _, _ = load_all_models()
     df = pd.DataFrame([input_data])
     X_proc = preprocessor.transform(df)
     
@@ -30,7 +30,7 @@ def predict_gpa_and_skill(input_data):
 
 def predict_burnout(input_data):
     """Predicts Burnout Risk Level based on input data (dict)."""
-    preprocessor, _, _, burnout_model, label_encoder = load_models(cache_version=2)
+    preprocessor, _, _, burnout_model, label_encoder = load_all_models()
     df = pd.DataFrame([input_data])
     X_proc = preprocessor.transform(df)
     
