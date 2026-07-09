@@ -4,6 +4,7 @@ import pickle
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder, LabelEncoder
 from sklearn.compose import ColumnTransformer
+from sklearn.utils.class_weight import compute_sample_weight
 
 # Data loading
 df = pd.read_csv("data/ai_student_impact_dataset.csv")
@@ -57,7 +58,8 @@ label_encoder = LabelEncoder()
 y_burnout_enc = label_encoder.fit_transform(y_burnout)
 
 burnout_model = xgb.XGBClassifier(n_estimators=250, max_depth=5, learning_rate=0.05, random_state=42, n_jobs=-1, verbosity=0, eval_metric="mlogloss")
-burnout_model.fit(X_proc, y_burnout_enc)
+sample_weights = compute_sample_weight(class_weight='balanced', y=y_burnout_enc)
+burnout_model.fit(X_proc, y_burnout_enc, sample_weight=sample_weights)
 
 # Save everything
 print("Saving models...")
